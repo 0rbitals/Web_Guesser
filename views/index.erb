@@ -5,8 +5,17 @@
     <title>Web Guesser</title>
   </head>
   <body>
+    <% if message == "That's correct!" %>
     <p>
-      The random number is <%= number %> !
+      The SECRET NUMBER is <%= number %>
     </p>
+    <% end %>
+    <p>
+      <%= message %>
+    </p>
+    <form>
+      <input type="text" name="guess" />
+      <input type="submit" value="Guess!" />
+    </form>
   </body>
 </html>
