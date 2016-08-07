@@ -1,24 +1,38 @@
 require 'sinatra'
 require 'sinatra/reloader'
 
-RANDOM_NUM = rand(100)
+@@random_num = rand(100)
+@@guesses = 5
 
 def check_guess(guess)
-  if params['guess'].to_i > RANDOM_NUM + 5
+  @@current_num = @@random_num
+  if params['guess'].to_i > @@random_num + 5 && @@guesses > 0
+    @@guesses -= 1
     msg = "Way too high!"
-  elsif params['guess'].to_i > RANDOM_NUM
+  elsif params['guess'].to_i > @@random_num && @@guesses > 0
+    @@guesses -= 1
     msg = "Too high!"
-  elsif params['guess'].to_i < RANDOM_NUM - 5
+  elsif params['guess'].to_i < @@random_num - 5 && @@guesses > 0
+    @@guesses -= 1
     msg = "Way too low!"
-  elsif params['guess'].to_i < RANDOM_NUM
+  elsif params['guess'].to_i < @@random_num && @@guesses > 0
+    @@guesses -= 1
     msg = "Too low!"
   else
-    msg = "That's correct!"
+    if @@guesses > 0
+      @@random_num = rand(100)
+      @@guesses = 5
+      msg = "That's correct!"
+    else
+      @@random_num = rand(100)
+      @@guesses = 5
+      msg = "You lost ! Good luck next time #{@@current_num}"
+    end
   end
 end
 
 get '/' do
   guess = params["guess"]
   msg = check_guess(guess)
-  erb :index, :locals => {:number => RANDOM_NUM, :message => msg}
+  erb :index, :locals => {:number => @@current_num, :message => msg}
 end
